@@ -364,7 +364,7 @@ foreign lib_spirv_tools {
 
 	// Prints the diagnostic to stderr.
 	@(link_name = "spvDiagnosticPrint")
-	diagnostic_print :: proc(#by_ptr diagnostic: Diagnostic) -> Result ---
+	diagnostic_print :: proc(diagnostic: ^Diagnostic) -> Result ---
 
 	// Gets the name of an instruction, without the "Op" prefix.
 	@(link_name = "spvOpcodeString")
@@ -574,8 +574,8 @@ Diagnostic :: struct {
 	isTextSource: bool,
 }
 
-Text   :: distinct string
-Binary :: distinct []u32
+Text   :: string
+Binary :: []u32
 
 Operand_Type :: enum u32 {
 	// A sentinel value.
