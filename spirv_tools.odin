@@ -1,14 +1,17 @@
 package spirv_tools
 
 when ODIN_OS == .Linux {
-	foreign import lib_spirv_tools "libSPIRV-Tools-shared.so"
+	foreign import lib {
+		"libSPIRV-Tools.so",
+		"libSPIRV-Tools-opt.so",
+	}
 } else when ODIN_OS == .Windows {
-	foreign import lib_spirv_tools "libSPIRV-Tools-shared.lib"
+	foreign import lib "libSPIRV-Tools-shared.lib"
 } else {
 	#panic("no lib_spirv_tools library path available on this OS")
 }
 
-foreign lib_spirv_tools {
+foreign lib {
 	// Returns the SPIRV-Tools software version as a null-terminated string.
 	// The contents of the underlying storage is valid for the remainder of
 	// the process.
@@ -401,41 +404,41 @@ foreign lib_spirv_tools {
 	// Creates and returns an optimizer object.  This object must be passed to
 	// optimizer APIs below and is valid until passed to spvOptimizerDestroy.
 	@(link_name = "spvOptimizerCreate")
-	optimizer_create :: proc(env: Target_Env) -> ^Optimizer ---
+	optimizer_create :: proc(env: Target_Env) -> Optimizer ---
 
 	// Destroys the given optimizer object.
 	@(link_name = "spvOptimizerDestroy")
-	optimizer_destroy :: proc(optimizer: ^Optimizer) ---
+	optimizer_destroy :: proc(optimizer: Optimizer) ---
 
 	// Sets an spv_message_consumer on an optimizer object.
 	@(link_name = "spvOptimizerSetMessageConsumer")
-	optimizer_set_message_consumer :: proc(optimizer: ^Optimizer, consumer: Message_Consumer) ---
+	optimizer_set_message_consumer :: proc(optimizer: Optimizer, consumer: Message_Consumer) ---
 
 	// Registers passes that attempt to legalize the generated code.
 	@(link_name = "spvOptimizerRegisterLegalizationPasses")
-	optimizer_register_legalization_passes :: proc(optimizer: ^Optimizer) ---
+	optimizer_register_legalization_passes :: proc(optimizer: Optimizer) ---
 
 	// Registers passes that attempt to improve performance of generated code.
 	@(link_name = "spvOptimizerRegisterPerformancePasses")
-	optimizer_register_performance_passes :: proc(optimizer: ^Optimizer) ---
+	optimizer_register_performance_passes :: proc(optimizer: Optimizer) ---
 
 	// Registers passes that attempt to improve the size of generated code.
 	@(link_name = "spvOptimizerRegisterSizePasses")
-	optimizer_register_size_passes :: proc(optimizer: ^Optimizer) ---
+	optimizer_register_size_passes :: proc(optimizer: Optimizer) ---
 
 	// Registers a pass specified by a flag in an optimizer object.
 	@(link_name = "spvOptimizerRegisterPassFromFlag")
-	optimizer_register_pass_from_flag :: proc(optimizer: ^Optimizer, flag: cstring) -> bool ---
+	optimizer_register_pass_from_flag :: proc(optimizer: Optimizer, flag: cstring) -> bool ---
 
 	// Registers passes specified by length number of flags in an optimizer object.
 	// Passes may remove interface variables that are unused.
 	@(link_name = "spvOptimizerRegisterPassesFromFlags")
-	optimizer_register_passes_from_flags :: proc(optimizer: ^Optimizer, flags: [^]cstring, flag_count: int) -> bool ---
+	optimizer_register_passes_from_flags :: proc(optimizer: Optimizer, flags: [^]cstring, flag_count: int) -> bool ---
 
 	// Registers passes specified by length number of flags in an optimizer object.
 	// Passes will not remove interface variables.
 	@(link_name = "spvOptimizerRegisterPassesFromFlagsWhilePreservingTheInterface")
-	optimizer_register_passes_from_flags_while_preserving_the_interface :: proc(optimizer: ^Optimizer, flags: [^]cstring, flag_count: int) -> bool ---
+	optimizer_register_passes_from_flags_while_preserving_the_interface :: proc(optimizer: Optimizer, flags: [^]cstring, flag_count: int) -> bool ---
 
 	// Optimizes the SPIR-V code of size |word_count| pointed to by |binary| and
 	// returns an optimized spv_binary in |optimized_binary|.
@@ -454,7 +457,7 @@ foreign lib_spirv_tools {
 	// that it is verifiable from data in the binary itself, or from the
 	// validator options set on the optimizer options.
 	@(link_name = "spvOptimizerRun")
-	optimizer_run :: proc(optimizer: Optimizer, binary: [^]u32, word_count: int, optimized_binary: ^Binary, options: ^Optimizer_Options) -> Result ---
+	optimizer_run :: proc(optimizer: Optimizer, binary: [^]u32, word_count: int, optimized_binary: ^Binary, options: Optimizer_Options) -> Result ---
 }
 
 Validator_Limit :: enum {
