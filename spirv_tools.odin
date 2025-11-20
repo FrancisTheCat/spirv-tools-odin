@@ -457,7 +457,7 @@ foreign lib {
 	// that it is verifiable from data in the binary itself, or from the
 	// validator options set on the optimizer options.
 	@(link_name = "spvOptimizerRun")
-	optimizer_run :: proc(optimizer: Optimizer, binary: [^]u32, word_count: int, optimized_binary: ^Binary, options: Optimizer_Options) -> Result ---
+	optimizer_run :: proc(optimizer: Optimizer, binary: [^]u32, word_count: int, optimized_binary: ^^Binary, options: Optimizer_Options) -> Result ---
 }
 
 Validator_Limit :: enum {
